@@ -1,37 +1,39 @@
-const todoInput = document.getElementById("input")
+const inputEle = document.getElementById("input")
 const addButton = document.getElementById("button")
-let todo;
+const todoContainer = document.getElementById("todo-container")
 let todoList = []
-let todoContainer = document.getElementById("todo-container")
-
-function uuid() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (param) {
-        let number = Math.random() * 16 | 0;
-        let randomNumber = param == 'x' ? number : (number & 0x3 | 0x8);
-        return randomNumber.toString(16);
-    });
-}
+let todo;
 
 addButton.addEventListener("click", (e)=> {
     e.preventDefault()
-    todo = todoInput.value
-    if(todo.length > 0){
-          todoList.push({id : uuid(), todo, isCompleted:false})
+    todo = inputEle.value
+    if(todo.length > 0) {
+        todoList.push({id : Date.now(), todo: todo, isCompleted:false})
+        addTodo()
+        inputEle.value = ""
     }
-        console.log(todoList)
-        createTodo(todoList)
 })
 
-function createTodo(todoList) {
-    todoContainer.innerHTML = todoList.map(todo => 
-        `
-        <div>
-            <input type="checkbox" id="item-${todo.id}">
-            <label for="item-${todo.id}">${todo.todo}</label>
-            <button>delete</button>
+todoContainer.addEventListener("click", (e)=>{
+    let key = e.target.dataset.key
+    let delKey = e.target.dataset.delkey
+
+    todoList = todoList.map(todo => 
+        todo.id === Number(key) ? {...todo, isCompleted: !todo.isCompleted} : todo
+    )
+    todoList = todoList.filter(todo => todo.id !== Number(delKey))
+
+    addTodo()
+})
+
+function addTodo() {
+    todoContainer.innerHTML = todoList.map(({id, todo, isCompleted})=> {
+        return `
+        <div class="todo-item">
+            <input type="checkbox" id="item-${id}" data-key="${id}" ${isCompleted ? "checked" : ""}>
+            <p data-key="${id}">${todo}</p>
+            <button data-delkey="${id}">Delete</button>
         </div>
         `
-    ).join("");
+    }).join("")
 }
-
-
