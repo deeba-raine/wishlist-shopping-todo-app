@@ -27,7 +27,7 @@ todoContainer.addEventListener("click", (e)=>{
 })
 
 function addTodo() {
-    todoContainer.innerHTML = todoList.map(({id, todo, isCompleted})=> {
+    todoContainer.innerHTML = todoList.map(({id, todo , isCompleted})=> {
         return `
         <div class="todo-item">
             <input type="checkbox" id="item-${id}" data-key="${id}" ${isCompleted ? "checked" : ""}>
